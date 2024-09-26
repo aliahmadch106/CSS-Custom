@@ -60,7 +60,7 @@ nav{
 main{
     height: 100vh;
     width: 100vw;
-    background-image: linear-gradient(135deg #131419 0%,#28313b 74%);
+    background: linear-gradient(to top right, #71ff67 0%, #5555ff 97%);
     overflow-x: hidden;
 }
 main h1{
