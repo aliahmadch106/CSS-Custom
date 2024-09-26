@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LayoutPro - Layout Builder</title>
+    <style>
+
+/* Global Styles */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* Layout Builder Styles */
+
+.layout-builder {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #444;
+}
+
+.toolbar button {
+  background-color: #444;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.toolbar button:hover {
+  background-color: #555;
+}
+
+.layout-grid {
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 10px;
+  padding: 20px;
+}
+
+.row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 10px;
+}
+
+.column {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.column:hover {
+  border-color: #ccc;
+}
+
+.properties-panel {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  border-left: 1px solid #444;
+}
+
+.properties-panel h2 {
+  margin-top: 0;
+}
+
+.properties-panel form {
+  display: flex;
+  flex-direction: column;
+}
+
+.properties-panel label {
+  margin-bottom: 10px;
+}
+
+.properties-panel input[type="number"],
+.properties-panel input[type="color"] {
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.properties-panel input[type="number"]:focus,
+.properties-panel input[type="color"]:focus {
+  outline: none;
+  border: 1px solid #555;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-builder">
+        <div class="toolbar">
+            <button class="add-row">Add Row</button>
+            <button class="add-column">Add Column</button>
+            <button class="delete-element">Delete Element</button>
+            <button class="undo">Undo</button>
+            <button class="redo">Redo</button>
+        </div>
+        <div class="layout-grid">
+            <div class="row">
+                <div class="column" style="width: 50%;">
+                    Column 1
+                </div>
+                <div class="column" style="width: 50%;">
+                    Column 2
+                </div>
+            </div>
+        </div>
+        <div class="properties-panel">
+            <h2>Element Properties</h2>
+            <form>
+                <label>Width:</label>
+                <input type="number" id="width" value="50">
+                <label>Height:</label>
+                <input type="number" id="height" value="100">
+                <label>Background Color:</label>
+                <input type="color" id="background-color" value="#ffffff">
+                <label>Border Radius:</label>
+                <input type="number" id="border-radius" value="10">
+            </form>
+        </div>
+    </div>
+    <script>
+        // Get elements
+const layoutGrid = document.querySelector('.layout-grid');
+const toolbar = document.querySelector('.toolbar');
+const propertiesPanel = document.querySelector('.properties-panel');
+
+// Initialize variables
+let rows = [];
+let columns = [];
+let selectedElement = null;
+let undoStack = [];
+let redoStack = [];
+
+// Functions
+function addRow() {
+  const row = document.createElement('div');
+  row.classList.add('row');
+  layoutGrid.appendChild(row);
+  rows.push(row);
+}
+
+function addColumn(row, width) {
+  const column = document.createElement('div');
+  column.classList.add('column');
+  column.style.width = `${width}%`;
+  row.appendChild(column);
+  columns.push(column);
+}
+
+function deleteElement(element) {
+  if (selectedElement === element) {
+    selectedElement = null;
+  }
+  element.remove();
+}
+
+function undo() {
+  if (undoStack.length > 0) {
+    const action = undoStack.pop();
+    redoStack.push(action);
+    switch (action.type) {
+      case 'addRow':
+        layoutGrid.removeChild(action.element);
+        rows.splice(rows.indexOf(action.element), 1);
+        break;
+      case 'addColumn':
+        action.element.remove();
+        columns.splice(columns.indexOf(action.element), 1);
+        break;
+      case 'deleteElement':
+        layoutGrid.appendChild(action.element);
+        break;
+    }
+  }
+}
+
+function redo() {
+  if (redoStack.length > 0) {
+    const action = redoStack.pop();
+    undoStack.push(action);
+    switch (action.type) {
+      case 'addRow':
+        layoutGrid.appendChild(action.element);
+        rows.push(action.element);
+        break;
+      case 'addColumn':
+        action.element.parentNode.appendChild(action.element);
+        columns.push(action.element);
+        break;
+      case 'deleteElement':
+        action.element.remove();
+        break;
+    }
+  }
+}
+
+function updateProperties(element, properties) {
+  Object.keys(properties).forEach((key) => {
+    element.style[key] = properties[key];
+  });
+}
+
+// Event listeners
+toolbar.addEventListener('click', (e) => {
+  if (e.target.classList.contains('add-row')) {
+    addRow();
+  } else if (e.target.classList.contains('add-column')) {
+    const row = layoutGrid.querySelector('.row:last-child');
+    addColumn(row, 50);
+  } else if (e.target.classList.contains('delete-element')) {
+    deleteElement(selectedElement);
+  } else if (e.target.classList.contains('undo')) {
+    undo();
+  } else if (e.target.classList.contains('redo')) {
+    redo();
+  }
+});
+
+layoutGrid.addEventListener('click', (e) => {
+  if (e.target.classList.contains('column')) {
+    selectedElement = e.target;
+    propertiesPanel.querySelector('input[type="number"]').value = selectedElement.style.width.replace('%', '');
+  }
+});
+
+propertiesPanel.addEventListener('input', (e) => {
+  if (selectedElement) {
+    const width = e.target.value;
+    updateProperties(selectedElement, { width: `${width}%` });
+  }
+});
+
+// Initialize layout
+function initializeLayout() {
+  const layoutGrid = document.querySelector('.layout-grid');
+  layoutGrid.innerHTML = '';
+
+  // Initialize variables
+  let rows = [];
+  let columns = [];
+  let selectedElement = null;
+
+  // Function to add row
+  function addRow() {
+    const row = document.createElement('div');
+    row.classList.add('row');
+    rows.push(row);
+    layoutGrid.appendChild(row);
+  }
+
+  // Function to add column
+  function addColumn(row, width) {
+    const column = document.createElement('div');
+    column.classList.add('column');
+    column.style.width = `${width}%`;
+    row.appendChild(column);
+    columns.push(column);
+  }
+
+  // Function to delete element
+  function deleteElement(element) {
+    if (selectedElement === element) {
+      selectedElement = null;
+    }
+    element.remove();
+  }
+
+  // Function to select element
+  function selectElement(element) {
+    selectedElement = element;
+    console.log(`Selected element: ${element}`);
+  }
+
+  // Function to update properties
+  function updateProperties(width, height, backgroundColor, borderRadius) {
+    selectedElement.style.width = `${width}%`;
+    selectedElement.style.height = `${height}px`;
+    selectedElement.style.backgroundColor = backgroundColor;
+    selectedElement.style.borderRadius = `${borderRadius}px`;
+  }
+
+  // Event listeners
+  document.addEventListener('DOMContentLoaded', () => {
+    addRow();
+    addColumn(rows[0], 50);
+    addColumn(rows[0], 50);
+
+    document.querySelector('.toolbar .add-row').addEventListener('click', addRow);
+    document.querySelector('.toolbar .add-column').addEventListener('click', () => {
+      const row = rows[rows.length - 1];
+      const width = prompt('Enter column width (1-100):');
+      addColumn(row, width);
+    });
+    document.querySelector('.toolbar .delete-element').addEventListener('click', () => {
+      if (selectedElement) {
+        deleteElement(selectedElement);
+      }
+    });
+
+    document.querySelectorAll('.column').forEach((column) => {
+      column.addEventListener('click', () => {
+        selectElement(column);
+      });
+    });
+
+    document.querySelector('.properties-panel form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const width = document.getElementById('width').value;
+      const height = document.getElementById('height').value;
+      const backgroundColor = document.getElementById('background-color').value;
+      const borderRadius = document.getElementById('border-radius').value;
+      updateProperties(width, height, backgroundColor, borderRadius);
+    });
+  });
+}
+
+initializeLayout();
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Color Generator</title>
+    <style>
+      /* Global Styles */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
+/* Gradient Generator Styles */
+
+.gradient-generator {
+  width: 80%;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.color-picker {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.color-picker input[type="color"] {
+  width: 40%;
+  height: 40px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+}
+
+#add-color {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.gradient-preview {
+  margin-bottom: 20px;
+}
+
+.gradient {
+  width: 100%;
+  height: 200px;
+  border-radius: 10px;
+}
+
+.gradient-code {
+  margin-bottom: 20px;
+}
+
+#gradient-code {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+}
+
+.advanced-customizations {
+  margin-bottom: 20px;
+}
+
+#gradient-direction,
+#gradient-type {
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="gradient-generator">
+        <h1>Gradient Color Generator</h1>
+        <div class="color-picker">
+            <input type="color" id="color1" value="#ff0000">
+            <input type="color" id="color2" value="#0000ff">
+            <button id="add-color">Add Color</button>
+        </div>
+        <div class="gradient-preview">
+            <div class="gradient" id="gradient"></div>
+        </div>
+        <div class="gradient-code">
+            <textarea id="gradient-code"></textarea>
+        </div>
+        <div class="advanced-customizations">
+            <h2>Advanced Customizations</h2>
+            <label>Gradient Direction:</label>
+            <select id="gradient-direction">
+                <option value="to right">To Right</option>
+                <option value="to left">To Left</option>
+                <option value="to top">To Top</option>
+                <option value="to bottom">To Bottom</option>
+            </select>
+            <label>Gradient Type:</label>
+            <select id="gradient-type">
+                <option value="linear-gradient">Linear Gradient</option>
+                <option value="radial-gradient">Radial Gradient</option>
+            </select>
+        </div>
+    </div>
+    <script>
+      
+// Initialize variables
+let colors = [
+  "#ff0000",
+  "#0000ff"
+];
+
+// Function to generate gradient
+function generateGradient() {
+  const gradient = document.getElementById("gradient");
+  const gradientCode = document.getElementById("gradient-code");
+  const gradientDirection = document.getElementById("gradient-direction").value;
+  const gradientType = document.getElementById("gradient-type").value;
+  
+  let gradientString = "";
+  
+  colors.forEach((color, index) => {
+    gradientString += `${color} ${index / (colors.length - 1) * 100}%`;
+    if (index < colors.length - 1) {
+      gradientString += ", ";
+    }
+  });
+  
+  if (gradientType === "linear-gradient") {
+    gradient.style.background = `linear-gradient(${gradientDirection}, ${gradientString})`;
+    gradientCode.value = `linear-gradient(${gradientDirection}, ${gradientString})`;
+  } else if (gradientType === "radial-gradient") {
+    gradient.style.background = `radial-gradient(${gradientString})`;
+    gradientCode.value = `radial-gradient(${gradientString})`;
+  }
+}
+
+// Function to add color
+function addColor() {
+  const newColor = document.getElementById("new-color").value;
+  colors.push(newColor);
+  generateGradient();
+}
+
+// Event listeners
+document.addEventListener("DOMContentLoaded", () => {
+  generateGradient();
+  
+  document.getElementById("add-color").addEventListener("click", () => {
+    const newColorInput = document.createElement("input");
+    newColorInput.type = "color";
+    newColorInput.id = "new-color"; // Assign id to new input element
+    document.querySelector(".color-picker").appendChild(newColorInput);
+    
+    newColorInput.addEventListener("input", () => {
+      addColor();
+    });
+  });
+  
+  document.getElementById("gradient-direction").addEventListener("change", generateGradient);
+  document.getElementById("gradient-type").addEventListener("change", generateGradient);
+});
+
+
+    </script>
+</body>
+</html>
+
+
+ -->

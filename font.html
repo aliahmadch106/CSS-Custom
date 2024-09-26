@@ -1,0 +1,426 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Font Pairing Tool</title>
+  <style>
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 80%;
+  margin: 40px auto;
+  /* background-color: #fff; */
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  box-shadow: 0 0 20px rgb(73, 73, 73);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.font-section {
+  margin-bottom: 20px;
+}
+
+.font-section label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.font-section select {
+  width: 100%;
+  height: 30px;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.font-size-section {
+  margin-bottom: 20px;
+}
+
+.font-size-section label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.font-size-section input[type="range"] {
+  width: 100%;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+.font-size-section span {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.font-color-section {
+  margin-bottom: 20px;
+}
+
+.font-color-section label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.font-color-section input[type="color"] {
+  width: 100%;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+.line-height-section {
+  margin-bottom: 20px;
+}
+
+.line-height-section label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.line-height-section input[type="range"] {
+  width: 100%;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+.line-height-section span {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.word-spacing-section {
+  margin-bottom: 20px;
+}
+
+.word-spacing-section label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.word-spacing-section input[type="range"] {
+  width: 100%;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+.word-spacing-section span {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.font-style-section {
+  margin-bottom: 20px;
+}
+
+.font-style-section label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.font-style-section select {
+  width: 100%;
+  height: 30px;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.pairing-type-section {
+  margin-bottom: 20px;
+}
+
+.pairing-type-section label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.pairing-type-section select {
+  width: 100%;
+  height: 30px;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.preview-section {
+  border-style: ridge;
+  border-radius: 14px;
+  border-width: 7px;
+  border-color: #ffffff #ffffff #ffffff #ffffff;
+  margin: 20px;
+  width: 80vw;
+  padding: 10px 20px;
+}
+
+.preview-section p {
+  /* font-size: 24px; */
+  /* font-weight: bold; */
+  margin-bottom: 10px;
+}
+
+.code-section {
+  margin-bottom: 20px;
+}
+
+.code-section textarea {
+  width: 100%;
+  height: 100px;
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+  </style>
+</head>
+<body>
+  <div class="preview-section">
+    <p id="preview-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+  </div>
+  <div class="container">
+    <h1>Font Pairing Tool</h1>
+    
+    <div class="font-section">
+      <label for="font-type">Font Type:</label>
+      <select id="font-type">
+        <optgroup label="Serif Fonts">
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Garamond">Garamond</option>
+          <option value="Cambria">Cambria</option>
+          <option value="Constantia">Constantia</option>
+        </optgroup>
+        <optgroup label="Sans-Serif Fonts">
+          <option value="Arial">Arial</option>
+          <option value="Helvetica">Helvetica</option>
+          <option value="Calibri">Calibri</option>
+          <option value="Tahoma">Tahoma</option>
+          <option value="Verdana">Verdana</option>
+        </optgroup>
+        <optgroup label="Monospaced Fonts">
+          <option value="Courier New">Courier New</option>
+          <option value="Consolas">Consolas</option>
+          <option value="Monaco">Monaco</option>
+          <option value="Menlo">Menlo</option>
+          <option value="Andale Mono">Andale Mono</option>
+        </optgroup>
+        <optgroup label="Script Fonts">
+          <option value="Lobster">Lobster</option>
+          <option value="Pacifico">Pacifico</option>
+          <option value="Great Vibes">Great Vibes</option>
+          <option value="Dancing Script">Dancing Script</option>
+          <option value="Alex Brush">Alex Brush</option>
+        </optgroup>
+        <optgroup label="Display Fonts">
+          <option value="Impact">Impact</option>
+          <option value="Museo">Museo</option>
+          <option value="Rockwell">Rockwell</option>
+          <option value="Playfair Display">Playfair Display</option>
+          <option value="Baskerville">Baskerville</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="font-size-section">
+      <label for="font-size">Font Size:</label>
+      <input type="range" id="font-size" min="10" max="100" value="16">
+      <span id="font-size-value">16px</span>
+    </div>
+    <div class="font-color-section">
+      <label for="font-color">Font Color:</label>
+      <input type="color" id="font-color" value="#000">
+    </div>
+    <div class="line-height-section">
+      <label for="line-height">Line Height:</label>
+      <input type="range" id="line-height" min="1" max="10" value="1.5" step="0.1">
+      <span id="line-height-value">1.5</span>
+    </div>
+    <div class="word-spacing-section">
+      <label for="word-spacing">Word Spacing:</label>
+      <input type="range" id="word-spacing" min="0" max="100" value="5">
+      <span id="word-spacing-value">5px</span>
+    </div>
+    <div class="font-style-section">
+      <label for="font-style">Font Style:</label>
+      <select id="font-style">
+        <option value="normal">Normal</option>
+        <option value="bold">Bold</option>
+        <option value="italic">Italic</option>
+      </select>
+    </div>
+    <div class="pairing-type-section">
+      <label for="pairing-type">Pairing Type:</label>
+      <select id="pairing-type">
+        <option value="monochromatic">Monochromatic</option>
+        <option value="complementary">Complementary</option>
+        <option value="analogous">Analogous</option>
+        <option value="triadic">Triadic</option>
+      </select>
+    </div>
+   
+    <div class="code-section">
+      <textarea id="code" readonly></textarea>
+      <button id="copy-button">Copy Code</button>
+    </div>
+  </div>
+  <script>
+
+const fontTypeSelect = document.getElementById('font-type');
+const fontSizeInput = document.getElementById('font-size');
+const fontColorInput = document.getElementById('font-color');
+const lineHeightInput = document.getElementById('line-height');
+const wordSpacingInput = document.getElementById('word-spacing');
+const fontStyleSelect = document.getElementById('font-style');
+const pairingTypeSelect = document.getElementById('pairing-type');
+const previewText = document.getElementById('preview-text');
+const codeTextarea = document.getElementById('code');
+
+fontTypeSelect.addEventListener('change', updatePreview);
+fontSizeInput.addEventListener('input', updatePreview);
+
+let currentColor = '#000000'; // default color
+
+fontColorInput.addEventListener('input', () => {
+  const hexCode = fontColorInput.value;
+  const rgbCode = hexToRgb(hexCode);
+  currentColor = rgbCode; // update current color
+  previewText.style.color = currentColor;
+  
+  const cssCode = `
+    font-family: ${fontTypeSelect.value};
+    font-size: ${fontSizeInput.value}px;
+    color: ${currentColor};
+    line-height: ${lineHeightInput.value};
+    word-spacing: ${wordSpacingInput.value}px;
+    font-style: ${fontStyleSelect.value};
+  `;
+  codeTextarea.value = cssCode;
+});
+
+
+
+
+
+// fontColorInput.addEventListener('input', () => {
+//   const hexCode = fontColorInput.value;
+//   const rgbCode = hexToRgb(hexCode);
+//   previewText.style.color = rgbCode;
+  
+//   const cssCode = `
+//     font-family: ${fontTypeSelect.value};
+//     font-size: ${fontSizeInput.value}px;
+//     color: ${rgbCode};
+//     line-height: ${lineHeightInput.value};
+//     word-spacing: ${wordSpacingInput.value}px;
+//     font-style: ${fontStyleSelect.value};
+//   `;
+//   codeTextarea.value = cssCode;
+// });
+
+
+
+
+
+
+lineHeightInput.addEventListener('input', updatePreview);
+wordSpacingInput.addEventListener('input', updatePreview);
+fontStyleSelect.addEventListener('change', () => {
+  const fontStyle = fontStyleSelect.value;
+  if (fontStyle === 'bold') {
+    previewText.style.fontWeight = 'bold';
+  } else if (fontStyle === 'italic') {
+    previewText.style.fontStyle = 'italic';
+  } else {
+    previewText.style.fontWeight = 'normal';
+    previewText.style.fontStyle = 'normal';
+  }
+});
+
+pairingTypeSelect.addEventListener('change', updatePreview);
+
+const copyButton = document.getElementById('copy-button');
+
+copyButton.addEventListener('click', () => {
+  codeTextarea.select();
+  navigator.clipboard.writeText(codeTextarea.value);
+  alert('Code copied to clipboard!');
+});
+
+
+
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})` : null;
+}
+
+
+function updatePreview() {
+  const fontType = fontTypeSelect.value;
+  const fontSize = fontSizeInput.value + 'px';
+  const fontColor = fontColorInput.value;
+  const lineHeight = lineHeightInput.value;
+  const wordSpacing = wordSpacingInput.value + 'px';
+  const fontStyle = fontStyleSelect.value;
+  const pairingType = pairingTypeSelect.value;
+
+  previewText.style.fontFamily = fontType;
+  previewText.style.fontSize = fontSize;
+  previewText.style.color = fontColor;
+  previewText.style.lineHeight = lineHeight;
+  previewText.style.wordSpacing = wordSpacing;
+  previewText.style.fontStyle = fontStyle;
+
+  if (pairingType === 'monochromatic') {
+    previewText.style.color = '#333';
+  } else if (pairingType === 'complementary') {
+    previewText.style.color = '#999';
+  } else if (pairingType === 'analogous') {
+    previewText.style.color = '#666';
+  } else if (pairingType === 'triadic') {
+    previewText.style.color = '#ccc';
+  }
+
+  const cssCode = `
+    font-family: ${fontTypeSelect.value};
+    font-size: ${fontSizeInput.value}px;
+    color: ${currentColor};
+    line-height: ${lineHeightInput.value};
+    word-spacing: ${wordSpacingInput.value}px;
+    font-style: ${fontStyleSelect.value};
+  `;
+  codeTextarea.value = cssCode;
+  previewText.style.color = currentColor; // update preview text color
+}
+
+
+// Update font size value display
+fontSizeInput.addEventListener('input', () => {
+  document.getElementById('font-size-value').innerText = fontSizeInput.value + 'px';
+});
+
+// Update line height value display
+lineHeightInput.addEventListener('input', () => {
+  document.getElementById('line-height-value').innerText = lineHeightInput.value;
+});
+
+// Update word spacing value display
+wordSpacingInput.addEventListener('input', () => {
+  document.getElementById('word-spacing-value').innerText = wordSpacingInput.value + 'px';
+});
+
+
+  </script>
+</body>
+</html>
+    

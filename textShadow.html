@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Shadow Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 10px;
+        }
+        .preview-section {
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* background-color: #f8f8f8; */
+            border-bottom: 1px solid #ccc;
+        }
+        .controls {
+            padding: 20px;
+            /* background-color: #fff; */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        label {
+            font-size: 1.2em;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .preview-box {
+            padding: 20px;
+            /* background-color: #fff; */
+            border: 1px solid #ccc;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 2em;
+            transition: all 0.3s ease;
+            text-align: center;
+            /* min-width: 300px; */
+            width: 80%;
+        }
+        .css-output {
+            padding: 10px;
+            /* background-color: #e0e0e0; */
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .layer-controls {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .add-layer-btn {
+            background-color: #007bff;
+        }
+        @media screen and (max-width: 768px) {
+            .preview-box {
+                font-size: 1.5em;
+            }
+            label {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Preview Section -->
+        <div class="preview-section">
+            <h2>Preview</h2>
+            <div class="preview-box" id="preview-box">
+                Preview Text
+            </div>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="controls">
+            <h2>Customize Shadow</h2>
+
+            <div id="layers-container">
+                <!-- First Layer (Default) -->
+                <div class="layer-controls">
+                    <h3>Shadow Layer 1</h3>
+                    <label for="horizontal-0">Horizontal Offset:</label>
+                    <input type="range" id="horizontal-0" min="-50" max="50" value="0">
+                    
+                    <label for="vertical-0">Vertical Offset:</label>
+                    <input type="range" id="vertical-0" min="-50" max="50" value="0">
+                    
+                    <label for="blur-0">Blur Radius:</label>
+                    <input type="range" id="blur-0" min="0" max="100" value="10">
+                    
+                    <label for="shadow-color-0">Shadow Color:</label>
+                    <input type="color" id="shadow-color-0" value="#000000">
+                </div>
+            </div>
+
+            <button class="add-layer-btn" id="add-layer-btn">Add New Layer</button>
+
+            <label for="font-size">Font Size:</label>
+            <input type="range" id="font-size" min="10" max="100" value="32">
+            
+            <label for="font-weight">Font Weight:</label>
+            <input type="range" id="font-weight" min="100" max="900" step="100" value="400">
+
+            <label for="text-color">Text Color:</label>
+            <input type="color" id="text-color" value="#000000">
+
+            <label for="text-input">Enter Text:</label>
+            <input type="text" id="text-input" value="Preview Text">
+        </div>
+
+        <!-- CSS Output Section -->
+        <div class="controls">
+            <h3>Generated CSS</h3>
+            <div class="css-output" id="css-output">
+                text-shadow: 0px 0px 10px #000000;
+            </div>
+
+            <button id="copy-btn">Copy CSS</button>
+        </div>
+    </div>
+
+    <script>
+        let layerCount = 1;
+        const layersContainer = document.getElementById('layers-container');
+        const fontSize = document.getElementById('font-size');
+        const fontWeight = document.getElementById('font-weight');
+        const textColor = document.getElementById('text-color');
+        const textInput = document.getElementById('text-input');
+        const previewBox = document.getElementById('preview-box');
+        const cssOutput = document.getElementById('css-output');
+        const copyBtn = document.getElementById('copy-btn');
+        const addLayerBtn = document.getElementById('add-layer-btn');
+
+        const shadowLayers = [
+            {
+                horizontal: document.getElementById('horizontal-0'),
+                vertical: document.getElementById('vertical-0'),
+                blur: document.getElementById('blur-0'),
+                color: document.getElementById('shadow-color-0')
+            }
+        ];
+
+        function updateShadow() {
+            let textShadow = shadowLayers.map((layer, index) => {
+                const h = layer.horizontal.value;
+                const v = layer.vertical.value;
+                const b = layer.blur.value;
+                const sc = layer.color.value;
+
+                return `${h}px ${v}px ${b}px ${sc}`;
+            }).join(", ");
+
+            const fs = fontSize.value;
+            const fw = fontWeight.value;
+            const tc = textColor.value;
+            const text = textInput.value;
+
+            previewBox.style.textShadow = textShadow;
+            previewBox.style.fontSize = `${fs}px`;
+            previewBox.style.fontWeight = fw;
+            previewBox.style.color = tc;
+            previewBox.textContent = text;
+
+            cssOutput.textContent = `text-shadow: ${textShadow};\nfont-size: ${fs}px;\nfont-weight: ${fw};\ncolor: ${tc};`;
+        }
+
+        function addNewLayer() {
+            const newLayerIndex = layerCount++;
+            const newLayer = document.createElement('div');
+            newLayer.classList.add('layer-controls');
+            newLayer.innerHTML = `
+                <h3>Shadow Layer ${newLayerIndex + 1}</h3>
+                <label for="horizontal-${newLayerIndex}">Horizontal Offset:</label>
+                <input type="range" id="horizontal-${newLayerIndex}" min="-50" max="50" value="0">
+                
+                <label for="vertical-${newLayerIndex}">Vertical Offset:</label>
+                <input type="range" id="vertical-${newLayerIndex}" min="-50" max="50" value="0">
+                
+                <label for="blur-${newLayerIndex}">Blur Radius:</label>
+                <input type="range" id="blur-${newLayerIndex}" min="0" max="100" value="10">
+                
+                <label for="shadow-color-${newLayerIndex}">Shadow Color:</label>
+                <input type="color" id="shadow-color-${newLayerIndex}" value="#000000">
+            `;
+
+            layersContainer.appendChild(newLayer);
+
+            shadowLayers.push({
+                horizontal: document.getElementById(`horizontal-${newLayerIndex}`),
+                vertical: document.getElementById(`vertical-${newLayerIndex}`),
+                blur: document.getElementById(`blur-${newLayerIndex}`),
+                color: document.getElementById(`shadow-color-${newLayerIndex}`)
+            });
+
+            shadowLayers[shadowLayers.length - 1].horizontal.addEventListener('input', updateShadow);
+            shadowLayers[shadowLayers.length - 1].vertical.addEventListener('input', updateShadow);
+            shadowLayers[shadowLayers.length - 1].blur.addEventListener('input', updateShadow);
+            shadowLayers[shadowLayers.length - 1].color.addEventListener('input', updateShadow);
+
+            updateShadow();
+        }
+
+        addLayerBtn.addEventListener('click', addNewLayer);
+
+        shadowLayers[0].horizontal.addEventListener('input', updateShadow);
+        shadowLayers[0].vertical.addEventListener('input', updateShadow);
+        shadowLayers[0].blur.addEventListener('input', updateShadow);
+        shadowLayers[0].color.addEventListener('input', updateShadow);
+
+        fontSize.addEventListener('input', updateShadow);
+        fontWeight.addEventListener('input', updateShadow);
+        textColor.addEventListener('input', updateShadow);
+        textInput.addEventListener('input', updateShadow);
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(cssOutput.textContent);
+            alert('CSS copied to clipboard');
+        });
+
+        updateShadow();
+    </script>
+</body>
+</html>

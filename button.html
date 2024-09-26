@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Button Generator</title>
+  <style>
+    * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* padding: 20px; */
+}
+
+.container {
+  padding-top: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.preview{
+  width: 90vw;
+  height: max-content;
+  gap: 30px;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding-bottom: 5px;
+  position: sticky;
+}
+
+.controls{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+@media (orientation:landscape) {
+  .controls{
+  width: 45%;
+  height: max-content;
+}
+}
+@media (orientation:portrait) {
+  .controls{
+  width: 95%;
+  height: max-content;
+}
+}
+.preview {
+  border: 1px solid #ccc;
+  /* padding: 20px; */
+  border-radius: 10px;
+}
+
+.custom-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: fixed;
+  top: 20px;
+}
+
+.controls {
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+textarea {
+  width: 100%;
+  margin-top: 10px;
+}
+
+button {
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+h3 {
+  margin-top: 20px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="preview">
+      <button id="customButton" class="custom-button">Custom Button</button>
+
+      <div>
+        <h3>Normal State CSS</h3>
+        <textarea id="normalCodeOutput" rows="8" readonly></textarea>
+        <button id="copyNormalCode">Copy Normal Code</button>
+      </div>
+
+      <div>
+        <h3>Hover State CSS</h3>
+        <textarea id="hoverCodeOutput" rows="8" readonly></textarea>
+        <button id="copyHoverCode">Copy Hover Code</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <h2>Customize Button (Normal)</h2>
+
+      <!-- Background Color -->
+      <label for="bgColor">Background Color:</label>
+      <input type="color" id="bgColor">
+
+      <!-- Text Color -->
+      <label for="textColor">Text Color:</label>
+      <input type="color" id="textColor">
+
+      <!-- Padding -->
+      <label for="paddingVertical">Vertical Padding:</label>
+      <input type="range" id="paddingVertical" min="0" max="50" value="10">
+      <label for="paddingHorizontal">Horizontal Padding:</label>
+      <input type="range" id="paddingHorizontal" min="0" max="50" value="20">
+
+      <!-- Font Size and Weight -->
+      <label for="fontSize">Font Size:</label>
+      <input type="range" id="fontSize" min="12" max="36" value="16">
+      <label for="fontWeight">Font Weight:</label>
+      <input type="range" id="fontWeight" min="100" max="900" step="100" value="400">
+
+      <!-- Transformations -->
+      <label for="scaleX">Scale X:</label>
+      <input type="range" id="scaleX" min="0.5" max="2" step="0.1" value="1">
+      <label for="scaleY">Scale Y:</label>
+      <input type="range" id="scaleY" min="0.5" max="2" step="0.1" value="1">
+      <label for="translateX">Translate X:</label>
+      <input type="range" id="translateX" min="-50" max="50" value="0">
+      <label for="translateY">Translate Y:</label>
+      <input type="range" id="translateY" min="-50" max="50" value="0">
+      <label for="rotate">Rotate (deg):</label>
+      <input type="range" id="rotate" min="0" max="360" value="0">
+
+      <!-- Shadows -->
+      <label for="textShadow">Text Shadow:</label>
+      <input type="text" id="textShadow" placeholder="e.g. 2px 2px 5px #000">
+      <label for="boxShadow">Box Shadow:</label>
+      <input type="text" id="boxShadow" placeholder="e.g. 5px 5px 10px #aaa">
+    </div>
+
+    <div class="controls">
+      <h2>Customize Button (Hover)</h2>
+
+      <!-- Background Color -->
+      <label for="hoverBgColor">Background Color:</label>
+      <input type="color" id="hoverBgColor">
+
+      <!-- Text Color -->
+      <label for="hoverTextColor">Text Color:</label>
+      <input type="color" id="hoverTextColor">
+
+      <!-- Padding -->
+      <label for="hoverPaddingVertical">Vertical Padding:</label>
+      <input type="range" id="hoverPaddingVertical" min="0" max="50" value="10">
+      <label for="hoverPaddingHorizontal">Horizontal Padding:</label>
+      <input type="range" id="hoverPaddingHorizontal" min="0" max="50" value="20">
+
+      <!-- Font Size and Weight -->
+      <label for="hoverFontSize">Font Size:</label>
+      <input type="range" id="hoverFontSize" min="12" max="36" value="16">
+      <label for="hoverFontWeight">Font Weight:</label>
+      <input type="range" id="hoverFontWeight" min="100" max="900" step="100" value="400">
+
+      <!-- Transformations -->
+      <label for="hoverScaleX">Scale X:</label>
+      <input type="range" id="hoverScaleX" min="0.5" max="2" step="0.1" value="1">
+      <label for="hoverScaleY">Scale Y:</label>
+      <input type="range" id="hoverScaleY" min="0.5" max="2" step="0.1" value="1">
+      <label for="hoverTranslateX">Translate X:</label>
+      <input type="range" id="hoverTranslateX" min="-50" max="50" value="0">
+      <label for="hoverTranslateY">Translate Y:</label>
+      <input type="range" id="hoverTranslateY" min="-50" max="50" value="0">
+      <label for="hoverRotate">Rotate (deg):</label>
+      <input type="range" id="hoverRotate" min="0" max="360" value="0">
+
+      <!-- Shadows -->
+      <label for="hoverTextShadow">Text Shadow:</label>
+      <input type="text" id="hoverTextShadow" placeholder="e.g. 2px 2px 5px #000">
+      <label for="hoverBoxShadow">Box Shadow:</label>
+      <input type="text" id="hoverBoxShadow" placeholder="e.g. 5px 5px 10px #aaa">
+    </div>
+  </div>
+
+  <script>
+    const customButton = document.getElementById('customButton');
+const normalCodeOutput = document.getElementById('normalCodeOutput');
+const hoverCodeOutput = document.getElementById('hoverCodeOutput');
+const copyNormalCodeButton = document.getElementById('copyNormalCode');
+const copyHoverCodeButton = document.getElementById('copyHoverCode');
+
+const hoverStyles = {};
+
+// Update button styles on user input
+const controls = document.querySelectorAll('.controls input, .controls textarea');
+
+controls.forEach(control => {
+  control.addEventListener('input', updateButton);
+});
+
+function updateButton() {
+  const bgColor = document.getElementById('bgColor').value;
+  const textColor = document.getElementById('textColor').value;
+  const paddingVertical = document.getElementById('paddingVertical').value + 'px';
+  const paddingHorizontal = document.getElementById('paddingHorizontal').value + 'px';
+  const fontSize = document.getElementById('fontSize').value + 'px';
+  const fontWeight = document.getElementById('fontWeight').value;
+  const scaleX = document.getElementById('scaleX').value;
+  const scaleY = document.getElementById('scaleY').value;
+  const translateX = document.getElementById('translateX').value + 'px';
+  const translateY = document.getElementById('translateY').value + 'px';
+  const rotate = document.getElementById('rotate').value + 'deg';
+  const textShadow = document.getElementById('textShadow').value;
+  const boxShadow = document.getElementById('boxShadow').value;
+
+  const hoverBgColor = document.getElementById('hoverBgColor').value;
+  const hoverTextColor = document.getElementById('hoverTextColor').value;
+  const hoverPaddingVertical = document.getElementById('hoverPaddingVertical').value + 'px';
+  const hoverPaddingHorizontal = document.getElementById('hoverPaddingHorizontal').value + 'px';
+  const hoverFontSize = document.getElementById('hoverFontSize').value + 'px';
+  const hoverFontWeight = document.getElementById('hoverFontWeight').value;
+  const hoverScaleX = document.getElementById('hoverScaleX').value;
+  const hoverScaleY = document.getElementById('hoverScaleY').value;
+  const hoverTranslateX = document.getElementById('hoverTranslateX').value + 'px';
+  const hoverTranslateY = document.getElementById('hoverTranslateY').value + 'px';
+  const hoverRotate = document.getElementById('hoverRotate').value + 'deg';
+  const hoverTextShadow = document.getElementById('hoverTextShadow').value;
+  const hoverBoxShadow = document.getElementById('hoverBoxShadow').value;
+
+  // Apply the normal state styles
+  customButton.style.backgroundColor = bgColor;
+  customButton.style.color = textColor;
+  customButton.style.padding = `${paddingVertical} ${paddingHorizontal}`;
+  customButton.style.fontSize = fontSize;
+  customButton.style.fontWeight = fontWeight;
+  customButton.style.transform = `scale(${scaleX}, ${scaleY}) translate(${translateX}, ${translateY}) rotate(${rotate})`;
+  customButton.style.textShadow = textShadow;
+  customButton.style.boxShadow = boxShadow;
+
+  // Apply the hover state styles
+  hoverStyles.backgroundColor = hoverBgColor;
+  hoverStyles.color = hoverTextColor;
+  hoverStyles.padding = `${hoverPaddingVertical} ${hoverPaddingHorizontal}`;
+  hoverStyles.fontSize = hoverFontSize;
+  hoverStyles.fontWeight = hoverFontWeight;
+  hoverStyles.transform = `scale(${hoverScaleX}, ${hoverScaleY}) translate(${hoverTranslateX}, ${hoverTranslateY}) rotate(${hoverRotate})`;
+  hoverStyles.textShadow = hoverTextShadow;
+  hoverStyles.boxShadow = hoverBoxShadow;
+
+  customButton.onmouseover = function () {
+    Object.assign(customButton.style, hoverStyles);
+  };
+
+  customButton.onmouseout = function () {
+    updateButton(); // Reapply normal styles on mouse out
+  };
+
+  // Generate CSS code for normal and hover states
+  const normalCode = `
+    .custom-button {
+      background-color: ${bgColor};
+      color: ${textColor};
+      padding: ${paddingVertical} ${paddingHorizontal};
+      font-size: ${fontSize};
+      font-weight: ${fontWeight};
+      transform: scale(${scaleX}, ${scaleY}) translate(${translateX}, ${translateY}) rotate(${rotate});
+      text-shadow: ${textShadow};
+      box-shadow: ${boxShadow};
+    }
+  `;
+
+  const hoverCode = `
+    .custom-button:hover {
+      background-color: ${hoverBgColor};
+      color: ${hoverTextColor};
+      padding: ${hoverPaddingVertical} ${hoverPaddingHorizontal};
+      font-size: ${hoverFontSize};
+      font-weight: ${hoverFontWeight};
+      transform: scale(${hoverScaleX}, ${hoverScaleY}) translate(${hoverTranslateX}, ${hoverTranslateY}) rotate(${hoverRotate});
+      text-shadow: ${hoverTextShadow};
+      box-shadow: ${hoverBoxShadow};
+    }
+  `;
+
+  normalCodeOutput.value = normalCode;
+  hoverCodeOutput.value = hoverCode;
+}
+
+// Copy normal state CSS code to clipboard
+copyNormalCodeButton.addEventListener('click', () => {
+  normalCodeOutput.select();
+  document.execCommand('copy');
+});
+
+// Copy hover state CSS code to clipboard
+copyHoverCodeButton.addEventListener('click', () => {
+  hoverCodeOutput.select();
+  document.execCommand('copy');
+});
+
+  </script>
+</body>
+</html>
+

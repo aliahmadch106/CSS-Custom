@@ -1,0 +1,14 @@
+@media (orientation:portrait) {
+    nav{
+        height: 70vh;
+        width: 100vw;
+        top: -70vh; left: 0;
+        z-index: 9;
+        background: linear-gradient(to top right, #ff8585 0%, #7a7aff 97%);
+        box-shadow: 0 0px 15px rgb(0, 0, 0);
+        a{
+            color: var(--text-nagative);
+            text-decoration: none;
+        }
+    }
+}

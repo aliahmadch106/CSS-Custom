@@ -1,0 +1,430 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Box Shadow Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .controls {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        .output {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .box {
+            width: 150px;
+            height: 150px;
+            background-color: #3498db;
+            box-shadow: none;
+        }
+
+        .css-code {
+            background-color: #e0e0e0;
+            padding: 10px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .layer {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .layer label {
+            font-weight: bold;
+        }
+
+        .add-layer-btn {
+            padding: 10px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .remove-layer-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="controls" id="controls">
+        <h2>Box Shadow Generator</h2>
+        <div id="layers">
+        </div>
+        <button class="add-layer-btn" id="add-layer">+ Add Layer</button>
+        <div class="css-code">
+            <span id="css-output">box-shadow: none;</span>
+            <button class="copy-btn" id="copy-btn">Copy</button>
+        </div>
+    </div>
+
+    <div class="output">
+        <div class="box" id="box"></div>
+    </div>
+</div>
+
+<script>
+    const box = document.getElementById('box');
+    const cssOutput = document.getElementById('css-output');
+    const copyBtn = document.getElementById('copy-btn');
+    const addLayerBtn = document.getElementById('add-layer');
+    const layersContainer = document.getElementById('layers');
+
+    let layers = [];
+
+    function updateBoxShadow() {
+        const boxShadowValue = layers.map(layer => {
+            const { hOffset, vOffset, blur, spread, color, inset } = layer;
+            return `${inset ? 'inset ' : ''}${hOffset}px ${vOffset}px ${blur}px ${spread}px ${color}`;
+        }).join(', ');
+
+        box.style.boxShadow = boxShadowValue || 'none';
+        cssOutput.textContent = `box-shadow: ${boxShadowValue || 'none'};`;
+    }
+
+    function addLayer() {
+        const layer = {
+            hOffset: 0,
+            vOffset: 0,
+            blur: 10,
+            spread: 0,
+            color: '#000000',
+            inset: false
+        };
+        layers.push(layer);
+
+        const layerElement = document.createElement('div');
+        layerElement.classList.add('layer');
+
+        layerElement.innerHTML = `
+            <label>Horizontal Offset</label>
+            <input type="range" min="-100" max="100" value="${layer.hOffset}" class="hOffset">
+            <label>Vertical Offset</label>
+            <input type="range" min="-100" max="100" value="${layer.vOffset}" class="vOffset">
+            <label>Blur Radius</label>
+            <input type="range" min="0" max="100" value="${layer.blur}" class="blur">
+            <label>Spread Radius</label>
+            <input type="range" min="-100" max="100" value="${layer.spread}" class="spread">
+            <label>Color</label>
+            <input type="color" value="${layer.color}" class="color-picker">
+            <label>
+                <input type="checkbox" class="inset-checkbox"> Inset
+            </label>
+            <button class="remove-layer-btn">Remove</button>
+        `;
+
+        // Event Listeners for the inputs
+        layerElement.querySelector('.hOffset').addEventListener('input', function (e) {
+            layer.hOffset = e.target.value;
+            updateBoxShadow();
+        });
+
+        layerElement.querySelector('.vOffset').addEventListener('input', function (e) {
+            layer.vOffset = e.target.value;
+            updateBoxShadow();
+        });
+
+        layerElement.querySelector('.blur').addEventListener('input', function (e) {
+            layer.blur = e.target.value;
+            updateBoxShadow();
+        });
+
+        layerElement.querySelector('.spread').addEventListener('input', function (e) {
+            layer.spread = e.target.value;
+            updateBoxShadow();
+        });
+
+        layerElement.querySelector('.color-picker').addEventListener('input', function (e) {
+            layer.color = e.target.value;
+            updateBoxShadow();
+        });
+
+        layerElement.querySelector('.inset-checkbox').addEventListener('input', function (e) {
+            layer.inset = e.target.checked;
+            updateBoxShadow();
+        });
+
+        layerElement.querySelector('.remove-layer-btn').addEventListener('click', function () {
+            layers = layers.filter(l => l !== layer);
+            layerElement.remove();
+            updateBoxShadow();
+        });
+
+        layersContainer.appendChild(layerElement);
+        updateBoxShadow();
+    }
+
+    addLayerBtn.addEventListener('click', addLayer);
+
+    copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(cssOutput.textContent);
+        alert('CSS code copied to clipboard!');
+    });
+
+    updateBoxShadow();
+</script>
+
+</body>
+</html>
+ -->
+
+
+
+
+
+
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Custom Box Shadow Generator</title>
+     <style>
+         body {
+             font-family: Arial, sans-serif;
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             justify-content: flex-start;
+             height: 100vh;
+             margin: 0;
+             padding: 20px;
+         }
+         .preview {
+             width: 100%;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             margin-bottom: 20px;
+         }
+         .preview-box {
+             width: 300px;
+             height: 300px;
+             background-color: #fff;
+             border: 2px solid #000;
+             box-shadow: 10px 10px 20px rgba(0,0,0,0.3);
+             transition: box-shadow 0.3s;
+         }
+         .container {
+             display: flex;
+             flex-direction: column;
+             width: 100%;
+             max-width: 1200px;
+         }
+         .controls {
+             display: flex;
+             flex-direction: column;
+             gap: 20px;
+             padding: 20px;
+             background-color: #fff;
+             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+             border-radius: 10px;
+             margin-bottom: 20px;
+             width: 100%;
+         }
+         .control-group {
+             display: flex;
+             flex-direction: column;
+             gap: 10px;
+         }
+         .css-code {
+             margin-top: 20px;
+             padding: 10px;
+             background-color: #f5f5f5;
+             border: 1px solid #ccc;
+             white-space: pre-wrap;
+         }
+         .add-layer-btn {
+             padding: 10px;
+             background-color: green;
+             color: white;
+             cursor: pointer;
+             border: none;
+             border-radius: 5px;
+         }
+         .copy-btn {
+             margin-top: 10px;
+             padding: 10px;
+             background-color: blue;
+             color: white;
+             border: none;
+             cursor: pointer;
+             border-radius: 5px;
+         }
+         @media (max-width: 768px) {
+             .preview-box {
+                 width: 200px;
+                 height: 200px;
+             }
+             .controls {
+                 gap: 10px;
+                 padding: 10px;
+             }
+             .control-group label {
+                 font-size: 14px;
+             }
+             .add-layer-btn, .copy-btn {
+                 padding: 8px;
+             }
+         }
+     </style>
+ </head>
+ <body>
+ 
+     <h1>Custom Box Shadow Generator</h1>
+ 
+     <div class="preview">
+         <div class="preview-box" id="preview-box"></div>
+     </div>
+ 
+     <div class="container">
+         <div class="controls" id="controls">
+             <div class="control-group" id="layers"></div>
+             <button class="add-layer-btn" id="add-layer-btn">+ Add Layer</button>
+         </div>
+ 
+         <div class="css-code" id="css-code"></div>
+         <button class="copy-btn" id="copy-btn">Copy CSS</button>
+     </div>
+ 
+     <script>
+         const previewBox = document.getElementById('preview-box');
+         const cssCode = document.getElementById('css-code');
+         const addLayerBtn = document.getElementById('add-layer-btn');
+         const layersContainer = document.getElementById('layers');
+         const copyBtn = document.getElementById('copy-btn');
+ 
+         let boxShadows = [];
+ 
+         function updatePreview() {
+             const boxShadowString = boxShadows.map(shadow => {
+                 return `${shadow.inset ? 'inset' : ''} ${shadow.hOffset}px ${shadow.vOffset}px ${shadow.blur}px ${shadow.spread}px ${shadow.color}`;
+             }).join(', ');
+ 
+             previewBox.style.boxShadow = boxShadowString;
+             cssCode.textContent = `box-shadow: ${boxShadowString};`;
+         }
+ 
+         function addLayer() {
+             const shadow = {
+                 hOffset: 10,
+                 vOffset: 10,
+                 blur: 20,
+                 spread: 0,
+                 color: '#000000',
+                 inset: false
+             };
+ 
+             boxShadows.push(shadow);
+ 
+             const layerDiv = document.createElement('div');
+             layerDiv.classList.add('control-group');
+             layerDiv.innerHTML = `
+                 <label>Horizontal Offset: <input type="range" min="-50" max="50" value="${shadow.hOffset}" class="hOffset-slider"></label>
+                 <label>Vertical Offset: <input type="range" min="-50" max="50" value="${shadow.vOffset}" class="vOffset-slider"></label>
+                 <label>Blur Radius: <input type="range" min="0" max="100" value="${shadow.blur}" class="blur-slider"></label>
+                 <label>Spread Radius: <input type="range" min="-50" max="50" value="${shadow.spread}" class="spread-slider"></label>
+                 <label>Color: <input type="color" value="${shadow.color}" class="color-picker"></label>
+                 <label>Inset: <input type="checkbox" class="inset-checkbox"></label>
+                 <hr>
+             `;
+ 
+             layersContainer.appendChild(layerDiv);
+ 
+             layerDiv.querySelector('.hOffset-slider').addEventListener('input', (e) => {
+                 shadow.hOffset = e.target.value;
+                 updatePreview();
+             });
+             layerDiv.querySelector('.vOffset-slider').addEventListener('input', (e) => {
+                 shadow.vOffset = e.target.value;
+                 updatePreview();
+             });
+             layerDiv.querySelector('.blur-slider').addEventListener('input', (e) => {
+                 shadow.blur = e.target.value;
+                 updatePreview();
+             });
+             layerDiv.querySelector('.spread-slider').addEventListener('input', (e) => {
+                 shadow.spread = e.target.value;
+                 updatePreview();
+             });
+             layerDiv.querySelector('.color-picker').addEventListener('input', (e) => {
+                 shadow.color = e.target.value;
+                 updatePreview();
+             });
+             layerDiv.querySelector('.inset-checkbox').addEventListener('change', (e) => {
+                 shadow.inset = e.target.checked;
+                 updatePreview();
+             });
+ 
+             updatePreview();
+         }
+ 
+         addLayerBtn.addEventListener('click', addLayer);
+ 
+         copyBtn.addEventListener('click', () => {
+             navigator.clipboard.writeText(cssCode.textContent);
+             alert('CSS Code copied to clipboard!');
+         });
+ 
+         updatePreview();
+     </script>
+ </body>
+ </html>
+ 
+
+

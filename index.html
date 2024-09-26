@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Border Radius Generator</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  max-width: 100vw;
+}
+
+.container {
+  width: 80%;
+  margin: 40px auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.box {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(to bottom right, #ff0000 0%, #0000ff 100%);
+  margin: 20px auto;
+}
+
+.controls {
+  margin-bottom: 20px;
+}
+
+label {
+  display: inline-block;
+  width: 100px;
+}
+
+input[type="range"] {
+  width: 50%;
+}
+
+#copy-btn {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#copy-btn:hover {
+  background-color: #3e8e41;
+}
+
+#css-code {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  font-size: 16px;
+  border-style: ridge;
+  border-radius: 19px;
+  border-width: 20px;
+  border-color: #ff2e2e #2e6dff #386aff #ff3333;
+
+}
+
+select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Custom Border Radius Generator</h1>
+    <div class="box" id="box"></div>
+    <div class="controls">
+      <label for="top-left">Top Left:</label>
+      <input type="range" id="top-left" min="0" max="100" value="10">
+      <label for="top-right">Top Right:</label>
+      <input type="range" id="top-right" min="0" max="100" value="10">
+      <label for="bottom-right">Bottom Right:</label>
+      <input type="range" id="bottom-right" min="0" max="100" value="10">
+      <label for="bottom-left">Bottom Left:</label>
+      <input type="range" id="bottom-left" min="0" max="100" value="10">
+      <label for="unit">Unit:</label>
+      <select id="unit">
+        <option value="px">Pixels</option>
+        <option value="%">Percentage</option>
+      </select>
+    </div>
+    <button id="copy-btn">Copy CSS</button>
+    <br><br>
+    <textarea id="css-code"></textarea>
+  </div>
+
+  <script>
+const box = document.getElementById('box');
+const topLeftInput = document.getElementById('top-left');
+const topRightInput = document.getElementById('top-right');
+const bottomRightInput = document.getElementById('bottom-right');
+const bottomLeftInput = document.getElementById('bottom-left');
+const unitSelect = document.getElementById('unit');
+const copyBtn = document.getElementById('copy-btn');
+const cssCodeTextarea = document.getElementById('css-code');
+
+topLeftInput.addEventListener('input', updateBorderRadius);
+topRightInput.addEventListener('input', updateBorderRadius);
+bottomRightInput.addEventListener('input', updateBorderRadius);
+bottomLeftInput.addEventListener('input', updateBorderRadius);
+unitSelect.addEventListener('change', updateBorderRadius);
+
+function updateBorderRadius() {
+  const topLeft = `${topLeftInput.value}${unitSelect.value}`;
+  const topRight = `${topRightInput.value}${unitSelect.value}`;
+  const bottomRight = `${bottomRightInput.value}${unitSelect.value}`;
+  const bottomLeft = `${bottomLeftInput.value}${unitSelect.value}`;
+
+  box.style.borderRadius = `${topLeft} ${topRight} ${bottomRight} ${bottomLeft}`;
+  cssCodeTextarea.value = `border-radius: ${topLeft} ${topRight} ${bottomRight} ${bottomLeft};`;
+}
+
+copyBtn.addEventListener('click', () => {
+  navigator.clipboard.writeText(cssCodeTextarea.value);
+  alert('CSS code copied to clipboard!');
+});
+  </script>
+</body>
+</html>

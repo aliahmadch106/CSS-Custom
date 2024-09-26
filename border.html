@@ -1,0 +1,292 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Border Generator</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  border: 47px ridge #ff0000;
+}
+
+.container {
+  width: 80%;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.box {
+  width: 200px;
+  height: 200px;
+  background-color: #f0f0f0;
+  margin: 20px auto;
+  border: none;
+}
+
+.controls {
+  margin-bottom: 20px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Custom Border Generator</h1>
+    <div class="box" id="box"></div>
+    <div class="controls">
+      <label for="border-type">Border Type:</label>
+      <select id="border-type">
+        <option value="solid">Solid</option>
+        <option value="dashed">Dashed</option>
+        <option value="dotted">Dotted</option>
+        <option value="double">Double</option>
+        <option value="groove">Groove</option>
+        <option value="ridge">Ridge</option>
+        <option value="inset">Inset</option>
+        <option value="outset">Outset</option>
+      </select>
+      <label for="border-width">Border Width:</label>
+      <input type="range" min="0" max="75" value="1" id="border-width">
+      <label for="border-color">Border Color:</label>
+      <input type="color" value="#000" id="border-color">
+      <button id="copy-btn">Copy CSS</button>
+      <textarea id="css-code"></textarea>
+    </div>
+  </div>
+  <script>
+    const box = document.getElementById('box');
+const borderTypeSelect = document.getElementById('border-type');
+const borderWidthInput = document.getElementById('border-width');
+const borderColorInput = document.getElementById('border-color');
+const copyBtn = document.getElementById('copy-btn');
+const cssCodeTextarea = document.getElementById('css-code');
+
+borderTypeSelect.addEventListener('change', updateBorder);
+borderWidthInput.addEventListener('input', updateBorder);
+borderColorInput.addEventListener('input', updateBorder);
+
+function updateBorder() {
+  const borderType = borderTypeSelect.value;
+  const borderWidth = borderWidthInput.value + 'px';
+  const borderColor = borderColorInput.value;
+
+  box.style.border = `${borderWidth} ${borderType} ${borderColor}`;
+  cssCodeTextarea.value = `border: ${borderWidth} ${borderType} ${borderColor};`;
+}
+
+copyBtn.addEventListener('click', () => {
+  navigator.clipboard.writeText(cssCodeTextarea.value);
+  alert('CSS code copied to clipboard!');
+});
+
+  </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customizable Border Tool</title>
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+    }
+    body{
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding-bottom: 20vh;
+    }
+    .preview-box {
+      width: 200px;
+      height: 200px;
+      margin: 20px auto;
+      border: 5px solid black;
+      border-radius: 0;
+    }
+    .border-controls{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .output-box {
+      width: 80%;
+      height: 150px;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .output-box textarea {
+      text-align: center;
+      width: 100%;
+      height: 100%;
+    }
+    button{
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3e8e41;
+}
+  </style>
+</head>
+<body>
+
+  <div class="preview-box" id="previewBox"></div>
+
+
+<div class="border-controls">
+  <div>
+    <label>Border Style:</label>
+    <select id="borderStyle">
+      <option value="solid">Solid</option>
+      <option value="dotted">Dotted</option>
+      <option value="dashed">Dashed</option>
+      <option value="double">Double</option>
+      <option value="groove">Groove</option>
+      <option value="ridge">Ridge</option>
+      <option value="inset">Inset</option>
+      <option value="outset">Outset</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Border Radius: <span id="borderRadiusValue">0</span>px</label>
+    <input type="range" id="borderRadius" min="0" max="400" value="0">
+  </div>
+
+  <div>
+    <label>Border Width: <span id="borderWidthValue">5</span>px</label>
+    <input type="range" id="borderWidth" min="1" max="100" value="5">
+  </div>
+
+  <div style="display: flex; flex-direction: column; align-items: center;
+  justify-content: center;">
+    <label>Single Border Color:</label>
+    <input type="color" id="singleColor">
+    <button onclick="applySingleColor()">Apply to All Sides</button>
+  </div>
+
+  <div>
+    <label>Top Border Color:</label>
+    <input type="color" id="topColor">
+  </div>
+
+  <div>
+    <label>Right Border Color:</label>
+    <input type="color" id="rightColor">
+  </div>
+
+  <div>
+    <label>Bottom Border Color:</label>
+    <input type="color" id="bottomColor">
+  </div>
+
+  <div>
+    <label>Left Border Color:</label>
+    <input type="color" id="leftColor">
+  </div>
+    </div>
+
+
+
+
+  <div class="output-box">
+    <button onclick="copyCode()">Copy Code</button>
+    <textarea id="outputCode" readonly></textarea>
+  </div>
+
+  <script>
+    const previewBox = document.getElementById('previewBox');
+    const outputCode = document.getElementById('outputCode');
+    const borderStyle = document.getElementById('borderStyle');
+    const borderRadius = document.getElementById('borderRadius');
+    const borderWidth = document.getElementById('borderWidth');
+    const topColor = document.getElementById('topColor');
+    const rightColor = document.getElementById('rightColor');
+    const bottomColor = document.getElementById('bottomColor');
+    const leftColor = document.getElementById('leftColor');
+    const singleColor = document.getElementById('singleColor');
+
+    function updatePreview() {
+      const style = borderStyle.value;
+      const radius = borderRadius.value + 'px';
+      const width = borderWidth.value + 'px';
+      const topBorderColor = topColor.value;
+      const rightBorderColor = rightColor.value;
+      const bottomBorderColor = bottomColor.value;
+      const leftBorderColor = leftColor.value;
+
+      // Apply styles to preview box
+      previewBox.style.borderStyle = style;
+      previewBox.style.borderRadius = radius;
+      previewBox.style.borderWidth = width;
+      previewBox.style.borderTopColor = topBorderColor;
+      previewBox.style.borderRightColor = rightBorderColor;
+      previewBox.style.borderBottomColor = bottomBorderColor;
+      previewBox.style.borderLeftColor = leftBorderColor;
+
+      // Generate CSS code
+      const code = `
+        .your-element {
+          border-style: ${style};
+          border-radius: ${radius};
+          border-width: ${width};
+          border-color: ${topBorderColor} ${rightBorderColor} ${bottomBorderColor} ${leftBorderColor};
+        }
+      `;
+      outputCode.value = code.trim();
+    }
+
+    function applySingleColor() {
+      const color = singleColor.value;
+      topColor.value = color;
+      rightColor.value = color;
+      bottomColor.value = color;
+      leftColor.value = color;
+      updatePreview();
+    }
+
+    borderStyle.addEventListener('change', updatePreview);
+    borderRadius.addEventListener('input', () => {
+      document.getElementById('borderRadiusValue').textContent = borderRadius.value;
+      updatePreview();
+    });
+    borderWidth.addEventListener('input', () => {
+      document.getElementById('borderWidthValue').textContent = borderWidth.value;
+      updatePreview();
+    });
+    topColor.addEventListener('input', updatePreview);
+    rightColor.addEventListener('input', updatePreview);
+    bottomColor.addEventListener('input', updatePreview);
+    leftColor.addEventListener('input', updatePreview);
+    singleColor.addEventListener('input', updatePreview);
+
+    function copyCode() {
+      outputCode.select();
+      document.execCommand('copy');
+      alert('CSS code copied to clipboard!');
+    }
+
+    // Initial preview update
+    updatePreview();
+  </script>
+
+</body>
+</html>
